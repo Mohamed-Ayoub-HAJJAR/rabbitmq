@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"  # Accès à l'interface de gestion RabbitMQ
+      - "5672:5672"    # Port AMQP pour la communication avec RabbitMQ
+    networks:
+      - rabbitmq-net
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    privileged: true    # Privilèges pour éviter les problèmes de création de threads
+    mem_limit: 256m    # Limite de mémoire, ajuste si nécessaire
+    restart: always    # Relancer automatiquement si RabbitMQ plante
+
+  node-app:
+    build:
+      context: ./node-app
+    container_name: node-app
+    networks:
+      - rabbitmq-net
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672  # Connexion à RabbitMQ
+    depends_on:
+      - rabbitmq
+    restart: always    # Relancer automatiquement si le service échoue
+
+  node-consumer:
+    build:
+      context: ./node-consumer
+    container_name: node-consumer
+    networks:
+      - rabbitmq-net
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672  # Connexion à RabbitMQ
+    depends_on:
+      - rabbitmq
+    restart: always    # Relancer automatiquement si le service échoue
+
+networks:
+  rabbitmq-net:
+    driver: bridge
+

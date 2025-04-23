@@ -1,0 +1,13 @@
+{
+  "name": "rabbitmq-consumer",
+  "version": "1.0.0",
+  "description": "Node.js RabbitMQ Consumer",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.3"
+  }
+}
+
