@@ -1,0 +1,18 @@
+sudo yum update -y
+sudo yum install -y docker
+sudo systemctl start docker
+sudo systemctl enable docker
+sudo usermod -aG docker ec2-user
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
+  -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+docker-compose version
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+sudo mkdir /var/www
+sudo chown ec2-user:ec2-user /var/www
+cd /www
+git clone https://github.com/Mohamed-Ayoub-HAJJAR/rabbitmq.git
+cd rabbitmq/
+docker-compose build
+docker-compose up  
+
